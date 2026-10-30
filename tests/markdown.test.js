@@ -1,0 +1,12 @@
+'use strict';
+const assert = require('node:assert/strict');
+const {markdown} = require('../dashboard/app.js');
+let html = markdown('<script>alert(1)</script>\n[bad](javascript:alert)\n`<img src=x onerror=alert(1)>`', 'docs/PLAN.md');
+assert(!html.includes('<script>'));
+assert(!html.includes('href="javascript:'));
+assert(!html.includes('<img'));
+html = markdown('| 과제 | 완료 |\n|---|---|\n| A | B |\n\n[작업](../works/R1/WORK.md)', 'docs/PLAN.md');
+assert(html.includes('<table>'));
+assert(html.includes('data-doc="works/R1/WORK.md"'));
+assert(html.includes('<td>A</td>'));
+console.log('Markdown: unsafe markup escaped; table and relative document links passed.');
