@@ -114,6 +114,12 @@ class CheckTests(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertIn("RESUME", output)
 
+    def test_nonempty_plan_row_without_round_id_is_rejected(self):
+        self.replace("docs/PLAN.md", "| | | | | | |", "| | 목표만 있고 라운드 없음 | | | | |")
+        code, output = self.run_command("ready")
+        self.assertEqual(code, 1)
+        self.assertIn("라운드", output)
+
     def test_python_project_without_git_passes(self):
         self.add_round()
         code, output = self.run_command("check", "R1")
