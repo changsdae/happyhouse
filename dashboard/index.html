@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="ko">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Happyhouse · 작업실</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
+<body>
+<header><div class="brand"><span class="mark">h.</span><div><b>happyhouse</b><span class="caption">계획에서 검증까지, 한 화면에.</span></div></div><div class="clock"><span>시험 기준 남은 시간 · 수동 동기화</span><strong id="timer">시작 전</strong></div></header>
+<main>
+<div class="heading"><div><div class="eyebrow">YOUR WORKSPACE / 읽기 전용</div><h1 id="project">작업실 연결 중</h1><p id="context">문제를 이해하고, 한 라운드씩 완성합니다.</p></div><div id="connection" role="status">연결 중…</div></div>
+<div id="warning" class="warning" hidden></div>
+<section class="overview" aria-label="라운드 진행 상황"><div class="section-title"><h2>전체 진행</h2><span id="budget"></span></div><div class="table-wrap"><table><thead><tr><th>라운드</th><th>구현 과제 / 완료조건</th><th>선행</th><th>난이도</th><th>배정</th><th>목표 종료 잔여</th><th>진행</th><th>검증</th></tr></thead><tbody id="rounds"></tbody></table></div><div id="empty" hidden><b>아직 라운드를 정하지 않았습니다.</b><p>주담당과 원문을 읽고 목표·완료조건을 구체화하면 여기에 계획이 나타납니다.</p></div></section>
+<section class="reading"><article class="pane"><div class="pane-head"><div><span class="eyebrow">항상 보는 전체 목표</span><h2>전체 계획</h2></div><span class="file">docs/PLAN.md</span></div><div id="plan" class="markdown" tabindex="0"></div></article>
+<article class="pane"><div class="pane-head"><div><span class="eyebrow">지금 생각하고 결정할 곳</span><h2 id="detail-title">현재 작업</h2></div><label>보는 라운드 <select id="selector" aria-label="보는 라운드"></select></label></div><nav id="tabs" aria-label="문서 종류"><button data-tab="work" class="active">작업·대화</button><button data-tab="check">검증</button><button data-tab="result">결과</button><button data-tab="review">계획 검토</button><button data-tab="dump">자유 메모</button></nav><div id="doc-path" class="file doc-path"></div><div id="detail" class="markdown" tabindex="0"></div></article></section>
+<footer>파일 변경을 3초마다 반영합니다. 화면에서 라운드를 골라도 작업 상태·승인은 바뀌지 않습니다. <span id="updated"></span></footer>
+</main></body></html>
