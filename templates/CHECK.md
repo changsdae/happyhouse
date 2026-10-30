@@ -1,4 +1,3 @@
-<!-- happyhouse:managed -->
 # {{ROUND}} 독립 검증
 
 - 검증담당 / 기록 시각: 미작성

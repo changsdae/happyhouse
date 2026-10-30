@@ -1,4 +1,3 @@
-<!-- happyhouse:managed -->
 # 시작과 재개
 
 작업 위치는 Workspace, 하네스 원본은 `./_harness/happyhouse/`입니다.
@@ -6,16 +5,17 @@
 ## 주담당에게
 
 ```text
-./_harness/happyhouse/AGENTS.md와 roles/MAIN.md를 명시적으로 읽어줘.
+./_harness/happyhouse/AGENTS.md와 ./_harness/happyhouse/roles/MAIN.md를 명시적으로 읽어줘.
 Workspace의 기존 지침을 확인한 뒤 docs/PLAN.md, 현재 works/Rn/WORK.md의
 상단 상태와 마지막 인계, 해당 validation/Rn/CHECK.md를 읽고 재개해줘.
 완료/미완료, 열린 질문, 현재 승인 범위, 다음 행동을 먼저 짧게 정리해줘.
+이해 복습 단계라면 docs/REVIEW.md의 미확인 항목도 읽어줘.
 ```
 
 ## 검증담당에게
 
 ```text
-./_harness/happyhouse/AGENTS.md와 roles/VALIDATOR.md를 명시적으로 읽어줘.
+./_harness/happyhouse/AGENTS.md와 ./_harness/happyhouse/roles/VALIDATOR.md를 명시적으로 읽어줘.
 문제 원문과 docs/PLAN.md, validation/PLAN_REVIEW.md를 읽어줘.
 현재 라운드의 validation/Rn/CHECK.md에서 인계와 실행 근거를 확인해줘.
 구현 코드를 보기 전에 독립적으로 검증할 조건과 기대결과부터 정리해줘.
