@@ -12,6 +12,8 @@ git clone https://github.com/changsdae/happyhouse.git _harness/happyhouse
 
 이미 같은 위치에 받았다면 다시 clone하지 않습니다. 기존 원본 변경 여부를 확인한 뒤 필요한 경우 `git -C _harness/happyhouse pull --ff-only`로 갱신합니다. 이 키트를 사용하는 동안 내려받은 원본은 수정하지 않습니다.
 
+응시환경에서 처음 사용할 때는 [응시환경 확인 목록](ENV_CHECK.md)으로 가져오기·검사 도구·작업 준비·두 세션·로컬 커밋을 한 번 확인합니다.
+
 ## 2. 두 세션에서 시작
 
 두 터미널 모두 같은 Workspace를 엽니다. 각 AI 세션에 [START.md](START.md)의 해당 요청문을 복사해 전달합니다. 요청문은 터미널 셸 명령이 아니라 **AI에게 보내는 채팅**입니다.
