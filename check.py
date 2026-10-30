@@ -224,6 +224,8 @@ def planned(root):
     rows = table(text(safe_path(root, "docs/PLAN.md")), "전체 진행표", 6)
     result = {}
     for row in rows:
+        if not any(row):
+            continue  # Display-only empty row in a plan with no rounds yet.
         if not ROUND.fullmatch(row[0]) or row[0] in result:
             fail("PLAN의 라운드는 중복 없이 R1, R2 형식이어야 합니다")
         result[row[0]] = row
