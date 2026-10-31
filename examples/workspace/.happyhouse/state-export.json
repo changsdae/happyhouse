@@ -1,0 +1,307 @@
+{
+  "schema": 1,
+  "tables": {
+    "meta": [
+      {
+        "key": "revision",
+        "value": "2"
+      }
+    ],
+    "rounds": [
+      {
+        "id": "R1",
+        "title": "데이터 읽기·오류 안내",
+        "budget": "보통·40분",
+        "target": "02:00:00",
+        "status": "계획 중",
+        "validator": "미작성",
+        "independent": 0,
+        "review": "미작성",
+        "records_ok": 0,
+        "config": "{\"inputs\": [], \"exclude\": []}",
+        "basis_ref": null,
+        "self_test": null
+      },
+      {
+        "id": "R2",
+        "title": "중복·가격 오류 찾기",
+        "budget": "높음·45분",
+        "target": "01:15:00",
+        "status": "계획 중",
+        "validator": "미작성",
+        "independent": 0,
+        "review": "미작성",
+        "records_ok": 0,
+        "config": "{\"inputs\": [], \"exclude\": []}",
+        "basis_ref": null,
+        "self_test": null
+      },
+      {
+        "id": "R3",
+        "title": "결과 화면·다운로드",
+        "budget": "보통·35분",
+        "target": "00:40:00",
+        "status": "계획 중",
+        "validator": "미작성",
+        "independent": 0,
+        "review": "미작성",
+        "records_ok": 0,
+        "config": "{\"inputs\": [], \"exclude\": []}",
+        "basis_ref": null,
+        "self_test": null
+      }
+    ],
+    "requirements": [
+      {
+        "id": "R1-req1",
+        "round_id": "R1",
+        "title": "정상 파일의 내용을 읽는다",
+        "source": "[가상 원문](../problem.md)"
+      },
+      {
+        "id": "R1-req2",
+        "round_id": "R1",
+        "title": "빠진 필수 열의 이름을 보여준다",
+        "source": "[가상 원문](../problem.md)"
+      },
+      {
+        "id": "R1-req3",
+        "round_id": "R1",
+        "title": "잘못된 데이터를 적용하지 않는다",
+        "source": "[가상 원문](../problem.md)"
+      },
+      {
+        "id": "R2-req1",
+        "round_id": "R2",
+        "title": "중복 주문을 찾는다",
+        "source": "[가상 원문](../problem.md)"
+      },
+      {
+        "id": "R2-req2",
+        "round_id": "R2",
+        "title": "상품 가격과 다른 주문을 찾는다",
+        "source": "[가상 원문](../problem.md)"
+      },
+      {
+        "id": "R3-req1",
+        "round_id": "R3",
+        "title": "오류 주문과 이유를 보여준다",
+        "source": "[가상 원문](../problem.md)"
+      },
+      {
+        "id": "R3-req2",
+        "round_id": "R3",
+        "title": "화면과 같은 결과를 CSV로 받는다",
+        "source": "[가상 원문](../problem.md)"
+      }
+    ],
+    "dependencies": [
+      {
+        "round_id": "R2",
+        "predecessor": "R1"
+      },
+      {
+        "round_id": "R3",
+        "predecessor": "R2"
+      }
+    ],
+    "cases": [
+      {
+        "round_id": "R1",
+        "id": "01",
+        "input": "정상 예제 선택 → 검증",
+        "expected": "필수 열·행을 읽고 정상 판정",
+        "source": "[가상 원문](../../../problem.md)"
+      },
+      {
+        "round_id": "R1",
+        "id": "02",
+        "input": "price 열 누락 예제 선택 → 검증",
+        "expected": "price 열 누락 안내",
+        "source": "[가상 원문](../../../problem.md)"
+      },
+      {
+        "round_id": "R1",
+        "id": "03",
+        "input": "잘못된 예제 선택 → 검증 → 적용 시도",
+        "expected": "적용 거부·기존 데이터 유지",
+        "source": "[가상 원문](../../../problem.md)"
+      },
+      {
+        "round_id": "R2",
+        "id": "01",
+        "input": "같은 주문번호를 두 행에 입력 → 검사",
+        "expected": "중복 주문·이유 표시",
+        "source": "[가상 원문](../../../problem.md)"
+      },
+      {
+        "round_id": "R2",
+        "id": "02",
+        "input": "상품 가격과 다른 주문 입력 → 검사",
+        "expected": "가격 불일치 주문·이유 표시",
+        "source": "[가상 원문](../../../problem.md)"
+      },
+      {
+        "round_id": "R3",
+        "id": "01",
+        "input": "오류가 있는 데이터로 검사 → 결과 화면",
+        "expected": "오류 주문과 구체적인 이유 표시",
+        "source": "[가상 원문](../../../problem.md)"
+      },
+      {
+        "round_id": "R3",
+        "id": "02",
+        "input": "결과 화면 → CSV 내려받기",
+        "expected": "화면과 동일한 주문·이유가 CSV에 포함",
+        "source": "[가상 원문](../../../problem.md)"
+      }
+    ],
+    "coverage": [
+      {
+        "round_id": "R1",
+        "case_id": "01",
+        "requirement": "R1-req1"
+      },
+      {
+        "round_id": "R1",
+        "case_id": "02",
+        "requirement": "R1-req2"
+      },
+      {
+        "round_id": "R1",
+        "case_id": "03",
+        "requirement": "R1-req3"
+      },
+      {
+        "round_id": "R2",
+        "case_id": "01",
+        "requirement": "R2-req1"
+      },
+      {
+        "round_id": "R2",
+        "case_id": "02",
+        "requirement": "R2-req2"
+      },
+      {
+        "round_id": "R3",
+        "case_id": "01",
+        "requirement": "R3-req1"
+      },
+      {
+        "round_id": "R3",
+        "case_id": "02",
+        "requirement": "R3-req2"
+      }
+    ],
+    "snapshots": [],
+    "runs": [],
+    "reuse": [],
+    "events": [
+      {
+        "id": 1,
+        "revision": 1,
+        "actor": "예시 생성기 · 실제 작업자 아님",
+        "role": "main",
+        "action": "apply",
+        "payload": "[{\"budget\": \"보통·40분\", \"id\": \"R1\", \"op\": \"round\", \"target\": \"02:00:00\", \"title\": \"데이터 읽기·오류 안내\"}, {\"id\": \"R1-req1\", \"op\": \"requirement\", \"round\": \"R1\", \"source\": \"[가상 원문](../problem.md)\", \"title\": \"정상 파일의 내용을 읽는다\"}, {\"id\": \"R1-req2\", \"op\": \"requirement\", \"round\": \"R1\", \"source\": \"[가상 원문](../problem.md)\", \"title\": \"빠진 필수 열의 이름을 보여준다\"}, {\"id\": \"R1-req3\", \"op\": \"requirement\", \"round\": \"R1\", \"source\": \"[가상 원문](../problem.md)\", \"title\": \"잘못된 데이터를 적용하지 않는다\"}, {\"budget\": \"높음·45분\", \"id\": \"R2\", \"op\": \"round\", \"target\": \"01:15:00\", \"title\": \"중복·가격 오류 찾기\"}, {\"id\": \"R2-req1\", \"op\": \"requirement\", \"round\": \"R2\", \"source\": \"[가상 원문](../problem.md)\", \"title\": \"중복 주문을 찾는다\"}, {\"id\": \"R2-req2\", \"op\": \"requirement\", \"round\": \"R2\", \"source\": \"[가상 원문](../problem.md)\", \"title\": \"상품 가격과 다른 주문을 찾는다\"}, {\"budget\": \"보통·35분\", \"id\": \"R3\", \"op\": \"round\", \"target\": \"00:40:00\", \"title\": \"결과 화면·다운로드\"}, {\"id\": \"R3-req1\", \"op\": \"requirement\", \"round\": \"R3\", \"source\": \"[가상 원문](../problem.md)\", \"title\": \"오류 주문과 이유를 보여준다\"}, {\"id\": \"R3-req2\", \"op\": \"requirement\", \"round\": \"R3\", \"source\": \"[가상 원문](../problem.md)\", \"title\": \"화면과 같은 결과를 CSV로 받는다\"}, {\"on\": [\"R1\"], \"op\": \"depends\", \"round\": \"R2\"}, {\"on\": [\"R2\"], \"op\": \"depends\", \"round\": \"R3\"}]",
+        "recorded_at": "2026-10-31T15:57:09.572969+00:00"
+      },
+      {
+        "id": 2,
+        "revision": 2,
+        "actor": "예시 생성기 · 검증 실행 안 함",
+        "role": "validator",
+        "action": "apply",
+        "payload": "[{\"expected\": \"필수 열·행을 읽고 정상 판정\", \"id\": \"01\", \"input\": \"정상 예제 선택 → 검증\", \"op\": \"case\", \"requirements\": [\"R1-req1\"], \"round\": \"R1\", \"source\": \"[가상 원문](../../../problem.md)\"}, {\"expected\": \"price 열 누락 안내\", \"id\": \"02\", \"input\": \"price 열 누락 예제 선택 → 검증\", \"op\": \"case\", \"requirements\": [\"R1-req2\"], \"round\": \"R1\", \"source\": \"[가상 원문](../../../problem.md)\"}, {\"expected\": \"적용 거부·기존 데이터 유지\", \"id\": \"03\", \"input\": \"잘못된 예제 선택 → 검증 → 적용 시도\", \"op\": \"case\", \"requirements\": [\"R1-req3\"], \"round\": \"R1\", \"source\": \"[가상 원문](../../../problem.md)\"}, {\"expected\": \"중복 주문·이유 표시\", \"id\": \"01\", \"input\": \"같은 주문번호를 두 행에 입력 → 검사\", \"op\": \"case\", \"requirements\": [\"R2-req1\"], \"round\": \"R2\", \"source\": \"[가상 원문](../../../problem.md)\"}, {\"expected\": \"가격 불일치 주문·이유 표시\", \"id\": \"02\", \"input\": \"상품 가격과 다른 주문 입력 → 검사\", \"op\": \"case\", \"requirements\": [\"R2-req2\"], \"round\": \"R2\", \"source\": \"[가상 원문](../../../problem.md)\"}, {\"expected\": \"오류 주문과 구체적인 이유 표시\", \"id\": \"01\", \"input\": \"오류가 있는 데이터로 검사 → 결과 화면\", \"op\": \"case\", \"requirements\": [\"R3-req1\"], \"round\": \"R3\", \"source\": \"[가상 원문](../../../problem.md)\"}, {\"expected\": \"화면과 동일한 주문·이유가 CSV에 포함\", \"id\": \"02\", \"input\": \"결과 화면 → CSV 내려받기\", \"op\": \"case\", \"requirements\": [\"R3-req2\"], \"round\": \"R3\", \"source\": \"[가상 원문](../../../problem.md)\"}]",
+        "recorded_at": "2026-10-31T15:57:09.586913+00:00"
+      }
+    ],
+    "views": [
+      {
+        "path": "docs/PLAN.md",
+        "block": "plan",
+        "digest": "54be78bbd666d6e34329c942bc629853298c7c64db7d5adf0f215d11a8e5480e"
+      },
+      {
+        "path": "docs/PLAN.md",
+        "block": "features",
+        "digest": "f94f5905f7ac333808bc19e1215fc00eb0165b4ff1bbed61fc64be63a50dd4f1"
+      },
+      {
+        "path": "works/R1/WORK.md",
+        "block": "progress",
+        "digest": "b3458da47cb3a7b9730b5510dbf5f8ddb7e2198e78571b939d4e51654052c9c4"
+      },
+      {
+        "path": "works/R1/validation/CHECK.md",
+        "block": "verdict",
+        "digest": "ec412e9843f8328c2301838e2b42f85a06dbfc9db625dfce27cf10ad1f08f22a"
+      },
+      {
+        "path": "works/R1/validation/CHECK.md",
+        "block": "cases",
+        "digest": "d421ca19a0f6bff2f667dd3f06a913e225189cf21ee3b0e589ecffdf409d937d"
+      },
+      {
+        "path": "works/R1/validation/CHECK.md",
+        "block": "basis",
+        "digest": "29af3e182cac330dd58af7406e70a9cac112860cd17707c1b6969f4a10fdacbd"
+      },
+      {
+        "path": "works/R1/validation/CHECK.md",
+        "block": "runs",
+        "digest": "790ea8a239104a035a5e17e782382f27d5fd389e3f534dbcfefbd64546506591"
+      },
+      {
+        "path": "works/R2/WORK.md",
+        "block": "progress",
+        "digest": "b3458da47cb3a7b9730b5510dbf5f8ddb7e2198e78571b939d4e51654052c9c4"
+      },
+      {
+        "path": "works/R2/validation/CHECK.md",
+        "block": "verdict",
+        "digest": "ec412e9843f8328c2301838e2b42f85a06dbfc9db625dfce27cf10ad1f08f22a"
+      },
+      {
+        "path": "works/R2/validation/CHECK.md",
+        "block": "cases",
+        "digest": "5ab80f9422e72f3cde5dd33ccf82550dd52d19f1c15adb3c279df583353ff787"
+      },
+      {
+        "path": "works/R2/validation/CHECK.md",
+        "block": "basis",
+        "digest": "29af3e182cac330dd58af7406e70a9cac112860cd17707c1b6969f4a10fdacbd"
+      },
+      {
+        "path": "works/R2/validation/CHECK.md",
+        "block": "runs",
+        "digest": "790ea8a239104a035a5e17e782382f27d5fd389e3f534dbcfefbd64546506591"
+      },
+      {
+        "path": "works/R3/WORK.md",
+        "block": "progress",
+        "digest": "b3458da47cb3a7b9730b5510dbf5f8ddb7e2198e78571b939d4e51654052c9c4"
+      },
+      {
+        "path": "works/R3/validation/CHECK.md",
+        "block": "verdict",
+        "digest": "ec412e9843f8328c2301838e2b42f85a06dbfc9db625dfce27cf10ad1f08f22a"
+      },
+      {
+        "path": "works/R3/validation/CHECK.md",
+        "block": "cases",
+        "digest": "558802d8f12e205ef38ba5d4b47ae91693523acec70710d961f4d7382cb705ec"
+      },
+      {
+        "path": "works/R3/validation/CHECK.md",
+        "block": "basis",
+        "digest": "29af3e182cac330dd58af7406e70a9cac112860cd17707c1b6969f4a10fdacbd"
+      },
+      {
+        "path": "works/R3/validation/CHECK.md",
+        "block": "runs",
+        "digest": "790ea8a239104a035a5e17e782382f27d5fd389e3f534dbcfefbd64546506591"
+      }
+    ]
+  }
+}
