@@ -153,6 +153,29 @@ Synthetic fixture approval, not actual authorization.
         s.render(self.root,self.db)
         self.assertIn('재검증 필요',(self.root/'docs/PLAN.md').read_text())
 
+    def test_changed_code_unchecks_self_test_in_work(self):
+        self.setup_round(); self.record_pass()
+        self.assertIn('- [x] 구현·자체 테스트', (self.root/'works/R1/WORK.md').read_text())
+        self.write('src/R1.py', 'changed after self-test')
+        s.render(self.root,self.db)
+        self.assertIn('- [ ] 구현·자체 테스트', (self.root/'works/R1/WORK.md').read_text())
+        self.assertTrue(s.self_test_issues(self.root,self.db,'R1'))
+
+    def test_text_order_preserves_branch_join(self):
+        self.apply([{'op':'round','id':rid,'title':rid} for rid in ('R1','R2','R3','R4')])
+        self.apply([{'op':'depends','round':'R2','on':['R1']},
+                    {'op':'depends','round':'R3','on':['R1']},
+                    {'op':'depends','round':'R4','on':['R2','R3']}])
+        plan=(self.root/'docs/PLAN.md').read_text()
+        self.assertIn('R2 + R3 → R4',plan)
+        self.assertNotIn('mermaid',plan)
+        self.assertNotIn('flowchart',plan)
+
+    def test_text_order_does_not_make_independent_rounds_sequential(self):
+        self.apply([{'op':'round','id':'R1','title':'one'}, {'op':'round','id':'R2','title':'two'}])
+        self.assertIn('선행 없이 시작: R1 · R2',s.development_order(self.db))
+        self.assertNotIn('R1 → R2',s.development_order(self.db))
+
     def test_downstream_inherits_watched_files(self):
         self.setup_round('R1'); self.record_pass('R1'); s.complete(self.root,self.db,'R1','fixture')
         self.setup_round('R2',['R1']); self.record_pass('R2'); s.complete(self.root,self.db,'R2','fixture')

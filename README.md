@@ -1,10 +1,12 @@
-# Happyhouse 3.1
+# Happyhouse 3.1.1
 
 **사람은 Markdown을 보고, AI는 SQLite에 상태를 기록한다.**
 
 문제 이해 → 계획 검토 → 구현·자체 테스트 → 직접 확인 → 독립 검증 → 완료 검사.
 
 웹 대시보드나 HTML 화면을 사용하지 않는다. 두 AI 세션과 Markdown 미리보기로 진행한다. SQLite는 뒤에서 기록을 관리하며 사람이 직접 열 필요는 없다.
+
+흐름도는 일반 화살표와 표로 표시한다. 별도 그래프 렌더링은 필요 없다. 처음 쓰는 사람은 **[USER_GUIDE.md](USER_GUIDE.md)**의 짧은 요청만 따라간다. 상세 검사 절차와 DB 명령은 AI가 읽는다.
 
 ## 가져와서 시작하기
 
@@ -26,10 +28,10 @@ git clone https://github.com/changsdae/happyhouse.git _harness/happyhouse
 | 전체 계획 | docs/PLAN.md | 라운드 목표·시간 배분·선행 관계 확인 |
 | 현재 작업 | works/R1/WORK.md | 문제·선택지 이해, 질문에 답하기 |
 | 직접 확인 | 같은 WORK.md | 구체적인 행동 수행, 된다/안 된다/기타 + 메모 |
-| 독립 검증 | works/R1/validation/CHECK.md | 실패 내용과 다음 수정 확인 |
+| 독립 검증 | 같은 WORK.md | 필요한 실패 요약·다음 행동만 확인 |
 | 대기·최종 복습 | docs/REVIEW.md | 실제 동작·선택 이유·한계를 내 말로 설명 |
 
-평소에는 **PLAN + 현재 WORK**, 세 번째 화면은 상황에 따라 **CHECK 또는 REVIEW**를 연다. 긴 대화·승인·실행법·변경 근거는 RECORD에 두고 필요할 때만 본다.
+평소에는 **PLAN + 현재 WORK** 두 개를 본다. 세 번째 화면은 서비스 또는 REVIEW로 사용한다. CHECK는 근거를 직접 확인하고 싶을 때만 연다. 긴 대화·승인·실행법·변경 근거는 RECORD에 두고 필요할 때만 본다.
 
 [PLAN 예시](examples/workspace/docs/PLAN.md) · [WORK 예시](examples/workspace/works/R1/WORK.md) · [CHECK 예시](examples/workspace/works/R1/validation/CHECK.md)
 
@@ -45,7 +47,7 @@ git clone https://github.com/changsdae/happyhouse.git _harness/happyhouse
 6. **수정:** 실패 묶음을 주담당에게 전달한다. 같은 사례 자체 테스트 후 실패·영향 범위만 재검증한다. 같은 실패가 반복되면 입력·환경·코드·기대 해석부터 대조한다.
 7. **완료:** 검증담당의 기록 검사 후 주담당이 complete를 실행한다. 필요한 근거가 충족되어야 완료 상태를 저장한다. REVIEW·RESUME·관련 로컬 Git 기록도 마무리한다.
 
-검증 중에는 검사 대상 코드·데이터·설정을 고정한다. 나는 REVIEW 복습 또는 다음 문제의 질문 준비를 한다. 두 세션은 자동으로 상대에게 일을 보내지 않는다. “CHECK를 읽고 수정해줘”처럼 전달한다. 세 번째 AI는 선택 사항이며 설명·질문 준비만 맡긴다.
+검증 중에는 검사 대상 코드·데이터·설정을 고정한다. 나는 REVIEW 복습 또는 다음 문제의 질문 준비를 한다. 두 세션은 자동으로 상대에게 일을 보내지 않는다. “CHECK를 읽고 수정해줘”처럼 전달한다. 세 번째 AI는 선택 사항이며 설명·질문 준비만 맡긴다. 기본 화면은 PLAN과 현재 WORK 두 개면 된다. 실패 내용과 다음 행동은 주담당이 WORK에 요약한다.
 
 ## SQLite가 관리하는 것
 
@@ -105,4 +107,4 @@ Python 3.9+와 표준 sqlite3만 필요하다. 추가 패키지·웹 서버·네
 python3 -m unittest discover -s tests -v
 ```
 
-키트 3.1 · 2026-11-01. 기존 2.1 PDF는 이 버전의 안내가 아니다. 시험 원문·개인정보·비밀·실제 작업 로그를 공개 키트에 넣지 않는다. 시험의 도구·통신·제출 규칙을 우선한다. 라이선스는 아직 지정하지 않았다.
+키트 3.1.1 · 2026-11-02. 기존 2.1 PDF는 이 버전의 안내가 아니다. 시험 원문·개인정보·비밀·실제 작업 로그를 공개 키트에 넣지 않는다. 시험의 도구·통신·제출 규칙을 우선한다. 라이선스는 아직 지정하지 않았다.

@@ -4,7 +4,6 @@ import argparse
 from contextlib import contextmanager
 from datetime import datetime, timezone
 import hashlib
-import html
 import json
 import os
 from pathlib import Path
@@ -294,14 +293,7 @@ def file_scope_issues(root, con):
     return [f'검사 범위 미연결: {p}' for p in sorted(unknown)]
 
 def full_check(root, con, rid, require_views=True):
-    errors = issues(root, con, rid) + file_scope_issues(root, con)
-    try:
-        own = json.loads(round_row(con,rid)['self_test'] or '{}')
-        evidence = checks.safe_path(root, own.get('evidence',''))
-        if not evidence.is_file() or checks.digest(evidence) != own.get('hash') or checks.inventory(root,config(con,rid)) != own.get('files'):
-            raise checks.Invalid('자체 테스트 근거 누락·변경 또는 코드 변경 후 자체 테스트 필요')
-    except (checks.Invalid,ValueError,OSError) as exc:
-        errors.append(str(exc))
+    errors = issues(root, con, rid) + file_scope_issues(root, con) + self_test_issues(root, con, rid)
     if require_views:
         errors += view_issues(root, con)
     row = round_row(con, rid)
@@ -310,6 +302,16 @@ def full_check(root, con, rid, require_views=True):
     except (checks.Invalid, OSError, ValueError, KeyError, TypeError) as exc:
         errors.append(str(exc))
     return list(dict.fromkeys(errors))
+
+def self_test_issues(root, con, rid):
+    try:
+        own = json.loads(round_row(con,rid)['self_test'] or '{}')
+        evidence = checks.safe_path(root, own.get('evidence',''))
+        if not evidence.is_file() or checks.digest(evidence) != own.get('hash') or checks.inventory(root,config(con,rid)) != own.get('files'):
+            raise checks.Invalid('자체 테스트 근거 누락·변경 또는 코드 변경 후 자체 테스트 필요')
+    except (checks.Invalid,ValueError,OSError,TypeError,AttributeError) as exc:
+        return [str(exc)]
+    return []
 
 def ensure_round_files(root, rid):
     for source, dest in [('WORK.md', 'WORK.md'), ('RECORD.md', 'RECORD.md'), ('CHECK.md', 'validation/CHECK.md')]:
@@ -367,6 +369,28 @@ def replace_section(document, title, body):
         raise checks.Invalid(f'필요한 절 없음: {title}')
     return re.sub(pattern, lambda m: m[1] + '\n' + body + '\n\n', document, flags=re.M | re.S)
 
+def development_order(con):
+    ids = round_ids(con)
+    if not ids:
+        return ''
+    parents = {rid: [r[0] for r in con.execute(
+        'SELECT predecessor FROM dependencies WHERE round_id=? ORDER BY predecessor', (rid,))] for rid in ids}
+    roots = [rid for rid in ids if not parents[rid]]
+    children = {rid: [x for x in ids if rid in parents[x]] for rid in ids}
+    # Collapse a simple chain; joins explicitly retain every prerequisite.
+    if len(roots) == 1 and all(len(parents[rid]) <= 1 and len(children[rid]) <= 1 for rid in ids):
+        chain = [roots[0]]
+        while children[chain[-1]]:
+            chain.append(children[chain[-1]][0])
+        return '**개발 순서:** ' + ' → '.join(chain)
+    lines = ['**개발 순서**', '', '- 선행 없이 시작: ' + ' · '.join(roots)]
+    for rid in ids:
+        if parents[rid]:
+            lines.append('- ' + ' + '.join(parents[rid]) + ' → ' + rid)
+    if any(len(x) > 1 for x in parents.values()):
+        lines += ['', '`+`는 앞선 라운드가 모두 완료되어야 한다는 뜻이다.']
+    return '\n'.join(lines)
+
 def desired_views(root, con):
     result = {}
     ids = round_ids(con)
@@ -380,20 +404,13 @@ def desired_views(root, con):
             ok = bool(linked) and not issues(root,con,rid) and round_row(con,rid)['status']=='완료'
             todo.append(f'- [{"x" if ok else " "}] {req["title"]}')
         todo.append('')
-    graph = ['```mermaid', 'flowchart LR']
-    for rid in ids:
-        label=html.escape(rid+' · '+round_row(con,rid)['title'],quote=True).replace('\n',' ')
-        graph.append(f'    {rid}["{label}"]')
-    for edge in con.execute('SELECT * FROM dependencies ORDER BY round_id,predecessor'):
-        graph.append(f'    {edge["predecessor"]} --> {edge["round_id"]}')
-    graph.append('```')
-    result['docs/PLAN.md'] = {'plan': table + ('\n\n'+'\n'.join(graph) if ids else ''),
+    result['docs/PLAN.md'] = {'plan': table + ('\n\n'+development_order(con) if ids else ''),
                               'features': '\n'.join(todo) if todo else '- [ ] 문제 이해 후 요구사항 등록'}
     for rid in ids:
         row = round_row(con,rid)
         current = verdict(root,con,rid)
         result[f'works/{rid}/WORK.md'] = {'progress': f'**진행:** {status_display(root,con,rid)} · **검증:** {current}\n\n'
-            f'- [{"x" if row["self_test"] else " "}] 구현·자체 테스트\n'
+            f'- [{"x" if not self_test_issues(root,con,rid) else " "}] 구현·자체 테스트\n'
             f'- [{"x" if current=="통과" else " "}] 독립 검증'}
         spec = con.execute('SELECT * FROM cases WHERE round_id=? ORDER BY id',(rid,)).fetchall()
         runs = latest_runs(con,rid)
