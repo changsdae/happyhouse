@@ -153,7 +153,7 @@ def config(con, rid):
 def round_basis(root, con, rid):
     if not json.loads(round_row(con,rid)['config'])['inputs']:
         raise checks.Invalid(f'{rid}: 자체 검사 범위를 먼저 등록하세요')
-    record = checks.text(checks.safe_path(root, f'works/{rid}/RECORD.md'))
+    record = checks.text(checks.record_path(root, rid))
     spec = con.execute('SELECT * FROM cases WHERE round_id=? ORDER BY id', (rid,)).fetchall()
     if not spec:
         raise checks.Invalid(f'{rid}: 검사 사례가 없습니다')
@@ -314,7 +314,7 @@ def self_test_issues(root, con, rid):
     return []
 
 def ensure_round_files(root, rid):
-    for source, dest in [('WORK.md', 'WORK.md'), ('RECORD.md', 'RECORD.md'), ('CHECK.md', 'validation/CHECK.md')]:
+    for source, dest in [('WORK.md', 'WORK.md'), ('CHECK.md', 'validation/CHECK.md')]:
         path = checks.safe_path(root, f'works/{rid}/{dest}', False)
         path.parent.mkdir(parents=True, exist_ok=True)
         if not path.exists():
@@ -327,7 +327,7 @@ def initialize(root):
     plan = root / 'docs/PLAN.md'
     if plan.exists() and checks.planned(root):
         raise checks.Invalid('기존 라운드가 있는 Workspace는 자동 이관하지 않습니다. 새 Workspace에서 시작하세요')
-    for name in ('PROBLEM', 'PLAN', 'PLAN_REVIEW', 'REVIEW', 'RESUME'):
+    for name in ('PROBLEM', 'PLAN', 'REVIEW'):
         path = checks.safe_path(root, f'docs/{name}.md', False)
         path.parent.mkdir(parents=True, exist_ok=True)
         if not path.exists():
@@ -427,7 +427,7 @@ def desired_views(root, con):
             checks_rows.append([c['id'],c['input'],c['expected'],c['source'],run['actual'] if run else '미실행',v])
             if run:
                 meta[c['id']] = run_metadata(con,run,row['basis_ref'])
-        record = checks.text(checks.safe_path(root,f'works/{rid}/RECORD.md'))
+        record = checks.text(checks.record_path(root, rid))
         rev = checks.fields(record,'기준').get('계획 기준','초안')
         result[f'works/{rid}/validation/CHECK.md'] = {
             'verdict': f'- 현재 판정: {current}\n- 기록 점검: {"충족" if row["records_ok"] else "미실시"}\n- 다음 행동: {"완료 검사" if current=="통과" else "미실행·실패·변경 영향 확인"}',

@@ -1,0 +1,7 @@
+case,stop,demand,seats
+even,A,10,10
+even,B,10,10
+even,C,10,10
+peak,A,4,10
+peak,B,10,10
+peak,C,16,10
