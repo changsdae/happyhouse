@@ -101,6 +101,13 @@ Synthetic fixture approval, not actual authorization.
         s.complete(self.root, self.db, 'R1', 'fixture main')
         self.assertEqual(s.round_row(self.db, 'R1')['status'], '완료')
 
+    def test_round_target_reserves_final_half_hour(self):
+        self.apply([{'op':'round','id':'R1','title':'fixture','target':'00:30:00'}])
+        for target in ('00:29:59', '01:60:00', '03:00:01'):
+            with self.subTest(target=target), self.assertRaises(s.checks.Invalid):
+                self.apply([{'op':'round','id':'R1','title':'fixture','target':target}])
+        self.assertEqual(s.round_row(self.db,'R1')['target'], '00:30:00')
+
     def test_init_empty_and_preserves_original(self):
         self.assertEqual(s.checks.readiness(self.root),[])
         self.assertEqual(s.round_ids(self.db),[])
