@@ -1,4 +1,4 @@
-# Happyhouse 3.2 · SQLite · 공통 규칙
+# Happyhouse 3.2.1 · SQLite · 공통 규칙
 
 사용 시 이 파일을 명시적으로 읽는다. 하위 AGENTS가 Workspace 전체에 자동 적용된다고 가정하지 않는다. Workspace 지침과 시험 규칙을 먼저 확인한다.
 
