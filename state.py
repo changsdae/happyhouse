@@ -539,7 +539,12 @@ def apply_op(root,con,op,actor,role):
     if kind=='round':
         if not isinstance(rid,str) or not checks.ROUND.fullmatch(rid): raise checks.Invalid('잘못된 라운드 ID')
         required(op['title'],'라운드 목표')
-        if 'target' in op and not re.fullmatch(r'\d{2}:\d{2}:\d{2}',op['target']): raise checks.Invalid('목표 잔여는 HH:MM:SS')
+        if 'target' in op:
+            target = op['target']
+            if not isinstance(target, str) or not re.fullmatch(r'[0-9]{2}:[0-5][0-9]:[0-5][0-9]', target):
+                raise checks.Invalid('목표 잔여는 HH:MM:SS')
+            if not '00:30:00' <= target <= '03:00:00':
+                raise checks.Invalid('3시간 시험의 목표 잔여는 00:30:00 이상 03:00:00 이하여야 합니다')
         if con.execute('SELECT 1 FROM rounds WHERE id=?',(rid,)).fetchone():
             con.execute('UPDATE rounds SET title=?,budget=COALESCE(?,budget),target=COALESCE(?,target) WHERE id=?',(op['title'],op.get('budget'),op.get('target'),rid))
         else:
