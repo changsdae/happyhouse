@@ -82,6 +82,25 @@ Synthetic fixture approval, not actual authorization.
         self.apply([{'op':'self_test','round':rid,'evidence':f'works/{rid}/self.log'}])
         return ref
 
+    def test_folded_workspace_records_support_completion(self):
+        self.setup_round()
+        # Use the same signed-off synthetic fields as the legacy-layout tests,
+        # but store them where the new workspace keeps narrative evidence.
+        work = self.root / 'works/R1/WORK.md'
+        separate = work.with_name('RECORD.md')
+        work.write_text(work.read_text().split('## 결정·실행·인계 기록')[0] + separate.read_text())
+        separate.unlink()
+        plan = self.root / 'docs/PLAN.md'
+        resume = plan.with_name('RESUME.md')
+        plan.write_text(plan.read_text().split('## 재개 메모')[0] +
+                        resume.read_text().replace('R1/RECORD.md','R1/WORK.md'))
+        resume.unlink()
+        self.assertFalse(plan.with_name('PLAN_REVIEW.md').exists())
+        self.assertEqual(s.checks.readiness(self.root), [])
+        self.record_pass()
+        s.complete(self.root, self.db, 'R1', 'fixture main')
+        self.assertEqual(s.round_row(self.db, 'R1')['status'], '완료')
+
     def test_init_empty_and_preserves_original(self):
         self.assertEqual(s.checks.readiness(self.root),[])
         self.assertEqual(s.round_ids(self.db),[])
