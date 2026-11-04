@@ -18,12 +18,9 @@ Workspace/
 ├── docs/
 │   ├── PROBLEM.md                문제 이해
 │   ├── PLAN.md                   목표·자동 진행표·위험
-│   ├── PLAN_REVIEW.md            계획 독립 검토
-│   ├── REVIEW.md                 내가 이해한 내용
-│   └── RESUME.md                 다음 세션 재개
+│   └── REVIEW.md                 내가 이해한 내용
 ├── works/R1/
 │   ├── WORK.md                   문제·진행·직접 확인
-│   ├── RECORD.md                 결정·승인·실행법·결과
 │   └── validation/
 │       ├── CHECK.md              자동 검사표 + 검증담당 수정 요청
 │       └── runs/                 기준 JSON·실제 실행 로그

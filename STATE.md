@@ -63,7 +63,7 @@ capture 후 실제 테스트를 실행한다. run의 basis·시간·로그를 �
   "revision": 3,
   "operations": [
     {"op":"run","round":"R1","case":"01","verdict":"통과","actual":"price 열 누락 표시·기존 데이터 유지 확인","basis":"runs/basis-0001.json","ran_at":"실제 시간대 포함 ISO 시각","dependencies":["src/app.py","tests/test_input.py","README.md"],"evidence":"runs/exec-0001-case01.log"},
-    {"op":"review","round":"R1","independent":true,"records_ok":true,"reason":"실제 실행·다른 근거·변경 영향·승인 범위·RECORD·RESUME를 대조한 결과와 한계"}
+    {"op":"review","round":"R1","independent":true,"records_ok":true,"reason":"실제 실행·다른 근거·변경 영향·승인 범위·WORK 상세 기록·PLAN 재개 메모를 대조한 결과와 한계"}
   ]
 }
 ```
@@ -93,4 +93,4 @@ records_ok는 검증담당의 실제 기록 검토 선언이다. run·case·conf
 
 DB는 작업 중 원본, state-export.json은 자동 생성한 읽기/복구용 복사본이다. 표와 JSON을 직접 고쳐 원본으로 역수입하지 않는다. JSON은 저장소에서 이력을 읽고 DB가 없는 환경에서 restore할 때 사용한다. 여러 브랜치의 내보내기를 자동 병합하지 않는다.
 
-restore는 DB만 재구성한다. 코드·RECORD·직접 체크·로그·기준 JSON도 함께 보존해야 실제 완료 상태를 다시 검증할 수 있다. 비밀·시험 개인정보는 내보내기·이벤트 요청·로그에 넣지 않는다.
+restore는 DB만 재구성한다. 코드·WORK 상세 기록·직접 체크·로그·기준 JSON도 함께 보존해야 실제 완료 상태를 다시 검증할 수 있다. 비밀·시험 개인정보는 내보내기·이벤트 요청·로그에 넣지 않는다.

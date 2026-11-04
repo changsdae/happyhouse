@@ -1,4 +1,4 @@
-# Happyhouse 3.1.2
+# Happyhouse 3.2
 
 **사람은 Markdown을 보고, AI는 SQLite에 상태를 기록한다.**
 
@@ -8,6 +8,8 @@
 
 흐름도는 일반 화살표와 표로 표시한다. 별도 그래프 렌더링은 필요 없다. 처음 쓰는 사람은 **[USER_GUIDE.md](USER_GUIDE.md)**의 짧은 요청만 따라간다. 상세 검사 절차와 DB 명령은 AI가 읽는다.
 
+새 Workspace에서는 PLAN 아래에 계획 검토·재개 메모를, WORK 아래에 결정·실행 기록을 접어 둔다. 검증담당은 중요한 입력 분포가 있는 라운드에서만 원자료 특성을 반영한 합성 테스트 세트를 만든다. 기존 Workspace에 별도 기록 파일이 있으면 검사기는 그 파일을 우선 읽는다. 아래 가상 예시 폴더는 기존 분리형 기록의 호환 예시다.
+
 ## 가져와서 시작하기
 
 문제와 코드가 있는 **Workspace**에서 한 번 실행한다.
@@ -16,7 +18,7 @@
 git clone https://github.com/changsdae/happyhouse.git _harness/happyhouse
 ```
 
-이미 받았다면 다시 clone하지 않는다. 이전 키트에 수정한 내용이 없는지 확인한 뒤 필요한 경우 `git -C _harness/happyhouse pull --ff-only`로 갱신한다. **2.x/3.0 작업 기록은 3.1과 자동 호환되지 않는다. 3.1은 새 Workspace에서 시작한다.**
+이미 받았다면 다시 clone하지 않는다. 이전 키트에 수정한 내용이 없는지 확인한 뒤 필요한 경우 `git -C _harness/happyhouse pull --ff-only`로 갱신한다. **2.x/3.0 작업 기록은 3.1과 자동 호환되지 않는다. 3.2 연습은 새 Workspace에서 시작한다.**
 
 두 터미널 모두 같은 Workspace를 연다. [START.md](START.md)의 해당 요청을 AI 채팅에 전달한다. 주담당이 폴더·SQLite·문서를 준비한다. 사람이 mkdir나 DB 명령을 따로 수행할 필요는 없다. 제공된 README·AGENTS·데이터와 내려받은 키트 원본은 보존한다.
 
@@ -31,7 +33,7 @@ git clone https://github.com/changsdae/happyhouse.git _harness/happyhouse
 | 독립 검증 | 같은 WORK.md | 필요한 실패 요약·다음 행동만 확인 |
 | 대기·최종 복습 | docs/REVIEW.md | 실제 동작·선택 이유·한계를 내 말로 설명 |
 
-평소에는 **PLAN + 현재 WORK** 두 개를 본다. 세 번째 화면은 서비스 또는 REVIEW로 사용한다. CHECK는 근거를 직접 확인하고 싶을 때만 연다. 긴 대화·승인·실행법·변경 근거는 RECORD에 두고 필요할 때만 본다.
+평소에는 **PLAN + 현재 WORK** 두 개를 본다. 세 번째 화면은 서비스 또는 REVIEW로 사용한다. CHECK는 근거를 직접 확인하고 싶을 때만 연다. 긴 대화·승인·실행법·변경 근거는 WORK 상세 기록에 두고 필요할 때만 본다.
 
 [PLAN 예시](examples/workspace/docs/PLAN.md) · [WORK 예시](examples/workspace/works/R1/WORK.md) · [CHECK 예시](examples/workspace/works/R1/validation/CHECK.md)
 
@@ -45,7 +47,7 @@ git clone https://github.com/changsdae/happyhouse.git _harness/happyhouse
 4. **직접 확인:** WORK의 시작 조건·행동·기대 결과를 따라 확인한다. 체크·메모는 보존한다. 미체크는 미확인이다.
 5. **검증:** 검증담당이 구현 열람 전에 작성한 기대결과로 실제 실행한다. 원문·손계산·사용 흐름 등 서로 다른 근거도 대조한다.
 6. **수정:** 실패 묶음을 주담당에게 전달한다. 같은 사례 자체 테스트 후 실패·영향 범위만 재검증한다. 같은 실패가 반복되면 입력·환경·코드·기대 해석부터 대조한다.
-7. **완료:** 검증담당의 기록 검사 후 주담당이 complete를 실행한다. 필요한 근거가 충족되어야 완료 상태를 저장한다. REVIEW·RESUME·관련 로컬 Git 기록도 마무리한다.
+7. **완료:** 검증담당의 기록 검사 후 주담당이 complete를 실행한다. 필요한 근거가 충족되어야 완료 상태를 저장한다. REVIEW·PLAN 재개 메모·관련 로컬 Git 기록도 마무리한다.
 
 검증 중에는 검사 대상 코드·데이터·설정을 고정한다. 나는 REVIEW 복습 또는 다음 문제의 질문 준비를 한다. 두 세션은 자동으로 상대에게 일을 보내지 않는다. “CHECK를 읽고 수정해줘”처럼 전달한다. 세 번째 AI는 선택 사항이며 설명·질문 준비만 맡긴다. 기본 화면은 PLAN과 현재 WORK 두 개면 된다. 실패 내용과 다음 행동은 주담당이 WORK에 요약한다.
 
@@ -75,12 +77,9 @@ Workspace/
 ├── docs/
 │   ├── PROBLEM.md               문제 이해
 │   ├── PLAN.md                  전체 진행
-│   ├── PLAN_REVIEW.md           계획 독립 검토
-│   ├── REVIEW.md                이해·복습
-│   └── RESUME.md                최신 재개 정보
+│   └── REVIEW.md                이해·복습
 ├── works/R1/
 │   ├── WORK.md                  현재 작업·직접 확인
-│   ├── RECORD.md                결정·승인·실행법·결과
 │   └── validation/
 │       ├── CHECK.md             검증 결과
 │       └── runs/                기준 JSON·실행 로그
@@ -107,4 +106,4 @@ Python 3.9+와 표준 sqlite3만 필요하다. 추가 패키지·웹 서버·네
 python3 -m unittest discover -s tests -v
 ```
 
-키트 3.1.2 · 2026-11-03. 기존 2.1 PDF는 이 버전의 안내가 아니다. 시험 원문·개인정보·비밀·실제 작업 로그를 공개 키트에 넣지 않는다. 시험의 도구·통신·제출 규칙을 우선한다. 라이선스는 아직 지정하지 않았다.
+키트 3.2 · 2026-11-04. 기존 2.1 PDF는 이 버전의 안내가 아니다. 시험 원문·개인정보·비밀·실제 작업 로그를 공개 키트에 넣지 않는다. 시험의 도구·통신·제출 규칙을 우선한다. 라이선스는 아직 지정하지 않았다.

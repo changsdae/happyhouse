@@ -21,7 +21,7 @@ LINK = re.compile(r"\[[^\]]*\]\((<[^>]+>|[^\s)]+)\)")
 IGNORED = {".git", "_harness", "node_modules", ".venv", "venv", "__pycache__",
            ".pytest_cache", ".mypy_cache", ".ruff_cache"}
 EMPTY = re.compile(r"^(?:미작성|미확인|미지정|미기록|미승인|미실행|미실시|미검토|미정|초안|구현 후 기록|구체화 필요|TODO|TBD|아직)(?:\b|\s|$)", re.I)
-CORE = ("docs/PROBLEM.md", "docs/PLAN.md", "docs/RESUME.md", "docs/REVIEW.md", "docs/PLAN_REVIEW.md")
+CORE = ("docs/PROBLEM.md", "docs/PLAN.md", "docs/REVIEW.md")
 
 
 class Invalid(ValueError):
@@ -212,12 +212,23 @@ def inventory(root, config):
     return dict(sorted(result.items()))
 
 
+def record_path(root, round_id):
+    base = f"works/{round_id}"
+    legacy = safe_path(root, base + "/RECORD.md", False)
+    return legacy if legacy.exists() else safe_path(root, base + "/WORK.md")
+
+
+def resume_document(root):
+    legacy = safe_path(root, "docs/RESUME.md", False)
+    return legacy if legacy.exists() else safe_path(root, "docs/PLAN.md")
+
+
 def round_paths(root, round_id):
     if not ROUND.fullmatch(round_id):
         fail("라운드는 R1, R2 형식이어야 합니다")
     base = f"works/{round_id}"
     return {"work": safe_path(root, base + "/WORK.md"),
-            "record": safe_path(root, base + "/RECORD.md"),
+            "record": record_path(root, round_id),
             "check": safe_path(root, base + "/validation/CHECK.md")}
 
 
@@ -289,7 +300,7 @@ def readiness(root):
                     fail(f"{round_id}: runs 폴더가 없습니다")
                 fields(text(paths["record"]), "기준")
                 fields(text(paths["check"]), "검사 기준")
-            fields(text(safe_path(root, "docs/RESUME.md")), "현재")
+            fields(text(resume_document(root)), "현재")
         except Invalid as exc:
             errors.append(str(exc))
     return errors
@@ -440,7 +451,7 @@ def inspect_round(root, round_id, row):
         filled(result.get(key), key)
     if paths["check"] not in links(root, paths["record"], result["검증 근거"]):
         fail("결과는 현재 라운드 CHECK를 근거로 연결해야 합니다")
-    resume_path = safe_path(root, "docs/RESUME.md")
+    resume_path = resume_document(root)
     resume = fields(text(resume_path), "현재")
     for key in ("단계 / 라운드", "완료 / 미완료", "유효한 실행 범위", "다음 행동", "근거", "갱신 시각 / 작성자"):
         filled(resume.get(key), key)
